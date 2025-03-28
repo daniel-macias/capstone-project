@@ -14,6 +14,10 @@ let demoNewsletters: NewsletterConfig[] = [
     outputFormat: 'docx',
     cloudStorage: 'GoogleDrive',
     createdAt: new Date().toISOString(),
+    schedule: {
+      startAt: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(), // 1 day from now
+      timezone: 'America/Tegucigalpa',
+    },
   },
   {
     id: 'demo2',
@@ -27,6 +31,10 @@ let demoNewsletters: NewsletterConfig[] = [
     outputFormat: 'markdown',
     cloudStorage: 'None',
     createdAt: new Date().toISOString(),
+    schedule: {
+      startAt: new Date(Date.now() + 1000 * 60 * 60 * 2).toISOString(), // 2 hours from now
+      timezone: 'UTC',
+    },
   },
 ];
 
@@ -38,8 +46,14 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     demoNewsletters.push(body);
-    return NextResponse.json({ message: 'Newsletter created successfully', data: body }, { status: 201 });
+    return NextResponse.json(
+      { message: 'Newsletter created successfully', data: body },
+      { status: 201 }
+    );
   } catch (error) {
-    return NextResponse.json({ message: 'Invalid request', error }, { status: 400 });
+    return NextResponse.json(
+      { message: 'Invalid request', error },
+      { status: 400 }
+    );
   }
 }

@@ -43,4 +43,11 @@ export const NewsletterConfigSchema = z.object({
       webhookUrl: z.string().url().optional(),
     })
     .optional(),
+
+   schedule: z
+  .object({
+    startAt: z.string().datetime(), // ISO 8601 timestamp
+    timezone: z.string().optional(), // e.g. "America/Tegucigalpa"
+  })
+  .optional(),
 });

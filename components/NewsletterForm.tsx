@@ -19,6 +19,11 @@ export default function NewsletterForm({ initialValues }: Props) {
   const [description, setDescription] = useState('');
   const [outputFormat, setOutputFormat] = useState('docx');
   const [cloudStorage, setCloudStorage] = useState('GoogleDrive');
+  const [schedule, setSchedule] = useState({
+    startAt: '',
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+  });
+  
 
   const [brandSettings, setBrandSettings] = useState({
     logoUrl: '',
@@ -65,6 +70,15 @@ export default function NewsletterForm({ initialValues }: Props) {
           sendOnGenerate: initialValues.emailIntegration.sendOnGenerate ?? false,
         });
       }
+
+      if (initialValues.schedule) {
+        const raw = initialValues.schedule.startAt;
+        const localFormat = raw ? new Date(raw).toISOString().slice(0, 16) : '';
+        setSchedule({
+          startAt: localFormat,
+          timezone: initialValues.schedule.timezone ?? (Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'),
+        });
+      }
     }
   }, [initialValues]);
 
@@ -89,6 +103,10 @@ export default function NewsletterForm({ initialValues }: Props) {
   const handleRemoveKeyword = (index: number) => {
     setKeywordList(keywordList.filter((_, i) => i !== index));
   };
+
+  const handleDownloadExample = () => {
+    console.log("Downloading example...")
+  }
 
   const handleFetchNews = () => {
     console.log('Saving newsletter with:', {
@@ -189,24 +207,16 @@ export default function NewsletterForm({ initialValues }: Props) {
             <p className="text-xs text-gray-500 mt-1">Keep it short and descriptive</p>
           </div>
 
-          {/* Date & Frequency */}
           <div>
             <label className="block text-gray-800 mb-2">Select Date Range</label>
             <select className="w-full p-2 border rounded-md" value={dateRange} onChange={(e) => setDateRange(e.target.value)}>
               <option>Past 24h</option>
               <option>Past Week</option>
-              <option>Custom...</option>
+              <option>Past Month</option>
             </select>
           </div>
 
-          <div>
-            <label className="block text-gray-800 mb-2">Newsletter Frequency</label>
-            <select className="w-full p-2 border rounded-md" value={frequency} onChange={(e) => setFrequency(e.target.value)}>
-              <option>Daily</option>
-              <option>Weekly</option>
-              <option>Custom...</option>
-            </select>
-          </div>
+
 
           <div>
             <label className="block text-gray-800 mb-2">Output Format</label>
@@ -272,46 +282,78 @@ export default function NewsletterForm({ initialValues }: Props) {
 
           <div>
             <h2 className="font-semibold text-lg text-gray-800 mb-2">Email Integration (optional)</h2>
+
             <select
-              value={emailIntegration.provider}
-              onChange={(e) => setEmailIntegration({ ...emailIntegration, provider: e.target.value as any })}
-              className="w-full mb-2 p-2 border rounded-md"
+                value={emailIntegration.provider}
+                onChange={(e) => setEmailIntegration({ ...emailIntegration, provider: e.target.value as any })}
+                className="w-full mb-2 p-2 border rounded-md"
+                disabled={!emailIntegration.sendOnGenerate}
             >
-              <option>None</option>
-              <option>Mailchimp</option>
-              <option>Substack</option>
-              <option>SMTP</option>
+                <option>None</option>
+                <option>Mailchimp</option>
+                <option>Substack</option>
+                <option>SMTP</option>
             </select>
+
             <input
-              type="text"
-              placeholder="List ID"
-              value={emailIntegration.listId}
-              onChange={(e) => setEmailIntegration({ ...emailIntegration, listId: e.target.value })}
-              className="w-full mb-2 p-2 border rounded-md"
+                type="text"
+                placeholder="List ID"
+                value={emailIntegration.listId}
+                onChange={(e) => setEmailIntegration({ ...emailIntegration, listId: e.target.value })}
+                className="w-full mb-2 p-2 border rounded-md"
+                disabled={!emailIntegration.sendOnGenerate}
             />
+
             <input
-              type="email"
-              placeholder="From Email"
-              value={emailIntegration.fromEmail}
-              onChange={(e) => setEmailIntegration({ ...emailIntegration, fromEmail: e.target.value })}
-              className="w-full mb-2 p-2 border rounded-md"
+                type="email"
+                placeholder="From Email"
+                value={emailIntegration.fromEmail}
+                onChange={(e) => setEmailIntegration({ ...emailIntegration, fromEmail: e.target.value })}
+                className="w-full mb-2 p-2 border rounded-md"
+                disabled={!emailIntegration.sendOnGenerate}
             />
+
             <label className="flex items-center gap-2">
-              <input
+                <input
                 type="checkbox"
                 checked={emailIntegration.sendOnGenerate}
                 onChange={(e) => setEmailIntegration({ ...emailIntegration, sendOnGenerate: e.target.checked })}
-              />
-              Send email on generate
+                />
+                Send email on generate
             </label>
+            </div>
+          <hr />
+            <div>
+                <label className="block text-gray-800 mb-2">Schedule Start</label>
+                <input
+                    type="datetime-local"
+                    className="w-full p-2 border rounded-md"
+                    value={schedule.startAt}
+                    onChange={(e) => setSchedule({ ...schedule, startAt: e.target.value })}
+                />
+            </div>
+            <div>
+            <label className="block text-gray-800 mb-2">Newsletter Frequency</label>
+            <select className="w-full p-2 border rounded-md" value={frequency} onChange={(e) => setFrequency(e.target.value)}>
+              <option>Daily</option>
+              <option>Weekly</option>
+              <option>Monthly</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">From the schedule start time</p>
           </div>
-        </div>
-
-        <div className="col-span-full">
+          <div className="col-span-full">
+            <button onClick={handleDownloadExample} className="w-full bg-blue-500 text-white p-2 rounded-md mt-4">
+                Download Example
+            </button>
+            </div>
+          <div className="col-span-full">
           <button onClick={handleFetchNews} className="w-full bg-green-500 text-white p-2 rounded-md mt-6">
-            Save & Fetch News
+            Save Newsletter
           </button>
         </div>
+        </div>
+
+        
       </div>
     </div>
   );

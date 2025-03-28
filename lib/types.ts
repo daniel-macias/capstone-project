@@ -35,4 +35,9 @@ export type NewsletterConfig = {
       folderPath?: string;
       webhookUrl?: string;
     };
+
+    schedule?: {
+        startAt: string;
+        timezone?: string;
+    };
   };
