@@ -1,5 +1,6 @@
 export type NewsletterConfig = {
     id: string;
+    active: boolean;
     name: string;
     description?: string;
   

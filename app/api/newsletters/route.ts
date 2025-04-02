@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 let demoNewsletters: NewsletterConfig[] = [
   {
     id: 'demo1',
+    active: true,
     name: 'Cybersecurity Weekly',
     description: 'Weekly roundup of top security news.',
     feeds: ['https://krebsonsecurity.com/feed/'],
@@ -21,6 +22,7 @@ let demoNewsletters: NewsletterConfig[] = [
   },
   {
     id: 'demo2',
+    active: true,
     name: 'AI Digest',
     description: 'Daily updates on AI trends and tools.',
     feeds: ['https://ai.googleblog.com/feeds/posts/default'],

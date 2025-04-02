@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Props = {
@@ -22,6 +23,7 @@ export default function NewsletterForm({ initialValues }: Props) {
   const [dateRange, setDateRange] = useState('Past Week');
   const [frequency, setFrequency] = useState('Weekly');
   const [name, setName] = useState('');
+  const [active, setActive] = useState(true);
   const [description, setDescription] = useState('');
   const [outputFormat, setOutputFormat] = useState('docx');
   const [cloudStorage, setCloudStorage] = useState('GoogleDrive');
@@ -49,6 +51,7 @@ export default function NewsletterForm({ initialValues }: Props) {
   useEffect(() => {
     if (initialValues) {
       setName(initialValues.name);
+      setActive(initialValues.active);
       setDescription(initialValues.description || '');
       setRssList(initialValues.feeds);
       setKeywordList(initialValues.keywords);
@@ -115,8 +118,9 @@ export default function NewsletterForm({ initialValues }: Props) {
   }
 
   const handleFetchNews = async () => {
-    const payload = {
+    const payload: any = {
       name,
+      active,
       description,
       feeds: rssList,
       keywords: keywordList,
@@ -130,18 +134,25 @@ export default function NewsletterForm({ initialValues }: Props) {
       schedule,
     };
   
-    console.log("Sending newsletter:", payload);
+    const isEditing = !!initialValues;
+    if (isEditing) {
+      payload.id = initialValues.id;
+    }
   
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const res = await fetch(isEditing ? "/api/patch" : "/api/upload", {
+      method: isEditing ? "PATCH" : "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
   
-    const json = await res.json();
-    console.log("Response from proxy:", json);
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const json = await res.json();
+      console.log("Response from proxy:", json);
+    } else {
+      const text = await res.text();
+      console.log("Non-JSON response:", text);
+    }
   };
 
   return (
@@ -417,6 +428,17 @@ export default function NewsletterForm({ initialValues }: Props) {
           </div>
         </div>
           <hr />
+          <h2 className="text-left font-semibold text-lg text-gray-800 mb-2">
+            Scheduling and Workflow
+          </h2>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="active"
+              checked={active}
+              onCheckedChange={(checked) => setActive(checked)}
+            />
+            <Label htmlFor="active">Active</Label>
+          </div>
             <div>
             <Label htmlFor="schedule-start">Schedule Start</Label>
             <Input
