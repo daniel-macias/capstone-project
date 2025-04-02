@@ -9,6 +9,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 type Props = {
   initialValues?: NewsletterConfig;
@@ -467,11 +475,27 @@ export default function NewsletterForm({ initialValues }: Props) {
                 Download Example
             </Button>
             </div>
-          <div className="col-span-full">
-          <Button onClick={handleFetchNews} className="w-full bg-green-500 text-white p-2 rounded-md">
+          <Dialog>
+          <DialogTrigger asChild>
+            <Button className="w-full bg-green-500 text-white p-2 rounded-md">
+              Save Newsletter
+            </Button>
+          </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Your newsletter is about to go live!</DialogTitle>
+                <DialogDescription>
+                    <p><span className="font-medium text-black">Name:</span> {name}</p>
+                    <p><span className="font-medium text-black">Description:</span> {description}</p>
+                    <p><span className="font-medium text-black">Start Time:</span> {schedule.startAt}</p>
+                    <p><span className="font-medium text-black">Frequency:</span> {frequency}</p>
+                </DialogDescription>
+                <Button onClick={handleFetchNews} className="w-full bg-green-500 text-white p-2 rounded-md">
             Save Newsletter
           </Button>
-        </div>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
 
         
