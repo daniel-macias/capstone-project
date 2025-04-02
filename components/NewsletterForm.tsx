@@ -7,11 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Props = {
@@ -119,12 +114,12 @@ export default function NewsletterForm({ initialValues }: Props) {
     console.log("Downloading example...")
   }
 
-  const handleFetchNews = () => {
-    console.log('Saving newsletter with:', {
+  const handleFetchNews = async () => {
+    const payload = {
       name,
       description,
-      rssList,
-      keywordList,
+      feeds: rssList,
+      keywords: keywordList,
       category,
       dateRange,
       frequency,
@@ -132,7 +127,21 @@ export default function NewsletterForm({ initialValues }: Props) {
       cloudStorage,
       brandSettings,
       emailIntegration,
+      schedule,
+    };
+  
+    console.log("Sending newsletter:", payload);
+  
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
+  
+    const json = await res.json();
+    console.log("Response from proxy:", json);
   };
 
   return (
