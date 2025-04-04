@@ -2,7 +2,7 @@ export type NewsletterConfig = {
     id: string;
     active: boolean;
     name: string;
-    description?: string;
+    description: string;
   
     feeds: string[];
     keywords: string[];

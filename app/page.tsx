@@ -19,6 +19,7 @@ export default function HomePage() {
         console.error('Failed to fetch newsletters:', error);
       } finally {
         setLoading(false);
+        console.log(newsletters)
       }
     };
 
