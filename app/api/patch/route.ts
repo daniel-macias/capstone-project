@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const WEBHOOK_PATCH = process.env.NEXT_PUBLIC_N8N_WEBHOOK_PATCH;
+const WEBHOOK_PATCH = process.env.NEXT_PUBLIC_N8N_WEBHOOK_PATCH_PROD;
 
 export async function PATCH(req: NextRequest) {
   try {

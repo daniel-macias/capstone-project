@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const WEBHOOK_JSON = process.env.NEXT_PUBLIC_N8N_WEBHOOK_POST;
+const WEBHOOK_JSON = process.env.NEXT_PUBLIC_N8N_WEBHOOK_POST_PROD;
 
 export async function POST(request: Request) {
   try {

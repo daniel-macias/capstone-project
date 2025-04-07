@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const WEBHOOK_GENERATE = process.env.NEXT_PUBLIC_N8N_WEBHOOK_GENERATE as string;
+const WEBHOOK_GENERATE = process.env.NEXT_PUBLIC_N8N_WEBHOOK_GENERATE_PROD as string;
 
 export async function POST(req: NextRequest) {
   try {

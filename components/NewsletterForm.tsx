@@ -130,8 +130,23 @@ export default function NewsletterForm({ initialValues }: Props) {
     setKeywordList(keywordList.filter((_, i) => i !== index));
   };
 
-  const handleDownloadGeneratedNewsletter = () => {
-    console.log("Downloading example...")
+  const handleDownloadGeneratedNewsletter = async () => {
+    if (initialValues?.id) {
+      try{
+        await fetch('/api/status', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: initialValues.id,
+            status: 'generating',
+          }),
+        });
+      }catch{
+        console.log("ERROR")
+      }
+    }
+    
+
   }
 
   const handleSave = async () => {
@@ -187,6 +202,15 @@ export default function NewsletterForm({ initialValues }: Props) {
     }
   
     try {
+      await fetch('/api/status', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: initialValues.id,
+          status: 'generating',
+        }),
+      });
+
       const payload = {
         id: initialValues.id,
         lastGenerated: new Date().toISOString(),
