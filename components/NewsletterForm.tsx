@@ -18,12 +18,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { stat } from 'fs';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialValues?: NewsletterConfig;
 };
 
 export default function NewsletterForm({ initialValues }: Props) {
+  const router = useRouter();
   const [status, setStatus] = useState('pending');
   const [rssFeed, setRssFeed] = useState('');
   const [rssList, setRssList] = useState<string[]>([]);
@@ -42,6 +44,7 @@ export default function NewsletterForm({ initialValues }: Props) {
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
   });
   const [lastGenerated, setLastGenerated] = useState('');
+  const [docId, setDocId] = useState('');
   
 
   const [brandSettings, setBrandSettings] = useState({
@@ -73,6 +76,7 @@ export default function NewsletterForm({ initialValues }: Props) {
       setCloudStorage(initialValues.cloudStorage);
       setStatus(initialValues.status);
       setLastGenerated(initialValues.lastGenerated ?? '');
+      setDocId(initialValues.docId ?? '');
 
       if (initialValues.brandSettings) {
         setBrandSettings({
@@ -130,6 +134,11 @@ export default function NewsletterForm({ initialValues }: Props) {
     console.log("Downloading example...")
   }
 
+  const handleSave = async () => {
+    await handleFetchNews();  
+    router.push('/');      
+  };
+
   const handleFetchNews = async () => {
     const payload: any = {
       name,
@@ -146,7 +155,8 @@ export default function NewsletterForm({ initialValues }: Props) {
       emailIntegration,
       schedule,
       status,
-      lastGenerated
+      lastGenerated,
+      docId
     };
   
     const isEditing = !!initialValues;
@@ -171,7 +181,34 @@ export default function NewsletterForm({ initialValues }: Props) {
   };
 
   const handleGenerateNewsletter = async () => {
-    console.log("Generate newsletter clicked!");
+    if (!initialValues?.id) {
+      console.error('No ID available to generate newsletter');
+      return;
+    }
+  
+    try {
+      const payload = {
+        id: initialValues.id,
+        lastGenerated: new Date().toISOString(),
+        docId: docId, 
+      };
+  
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!res.ok) {
+        throw new Error('Failed to trigger newsletter generation');
+      }
+  
+      const data = await res.json();
+      console.log('Newsletter generation triggered:', data);
+      
+    } catch (error) {
+      console.error('Error generating newsletter:', error);
+    }
   };
 
   return (
@@ -469,14 +506,8 @@ export default function NewsletterForm({ initialValues }: Props) {
           </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Your newsletter is about to go live!</DialogTitle>
-                <DialogDescription>
-                    <p><span className="font-medium text-black">Name:</span> {name}</p>
-                    <p><span className="font-medium text-black">Description:</span> {description}</p>
-                    <p><span className="font-medium text-black">Start Time:</span> {schedule.startAt}</p>
-                    <p><span className="font-medium text-black">Frequency:</span> {frequency}</p>
-                </DialogDescription>
-                <Button onClick={handleFetchNews} className="w-full bg-green-500 text-white p-2 rounded-md">
+                <DialogTitle>Are you sure you want to save your changes?</DialogTitle>
+                <Button onClick={handleSave} className="w-full bg-green-500 text-white p-2 rounded-md">
             Save Changes
           </Button>
               </DialogHeader>

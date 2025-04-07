@@ -43,4 +43,5 @@ export type NewsletterConfig = {
 
     status: 'pending'|'generating'|'ready';
     lastGenerated: string;
+    docId?: string;
   };
