@@ -7,7 +7,7 @@ export default function Navbar() {
     <nav className="bg-white shadow-sm">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="text-xl font-bold text-blue-600">
-          NewsGen
+          Newsletter Generator
         </Link>
         <div className="space-x-6 text-sm text-gray-800">
           <Link href="/" className="hover:underline">
