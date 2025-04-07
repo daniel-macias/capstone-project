@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const WEBHOOK_GET = process.env.NEXT_PUBLIC_N8N_WEBHOOK_GET as string;
+const WEBHOOK_GET = process.env.NEXT_PUBLIC_N8N_WEBHOOK_GET_PROD as string;
 
 export async function GET() {
   try {
@@ -14,11 +14,10 @@ export async function GET() {
 
     console.log("Fetched from webhook:", data);
 
-    // 🔥 Now map _id to id
     const mapped = Array.isArray(data)
       ? data.map((item: any) => ({
           ...item,
-          id: item._id,  // 👈 Important: copy _id into id
+          id: item._id,  
         }))
       : [];
 

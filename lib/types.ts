@@ -15,7 +15,6 @@ export type NewsletterConfig = {
     cloudStorage: 'GoogleDrive' | 'OneDrive' | 'None';
   
     createdAt: string;
-    lastGeneratedAt?: string;
   
     brandSettings?: {
       logoUrl?: string;
@@ -41,4 +40,7 @@ export type NewsletterConfig = {
         startAt: string;
         timezone?: string;
     };
+
+    status: 'pending'|'generating'|'ready';
+    lastGenerated: string;
   };

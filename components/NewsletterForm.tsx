@@ -17,12 +17,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { stat } from 'fs';
 
 type Props = {
   initialValues?: NewsletterConfig;
 };
 
 export default function NewsletterForm({ initialValues }: Props) {
+  const [status, setStatus] = useState('pending');
   const [rssFeed, setRssFeed] = useState('');
   const [rssList, setRssList] = useState<string[]>([]);
   const [keywords, setKeywords] = useState('');
@@ -39,6 +41,7 @@ export default function NewsletterForm({ initialValues }: Props) {
     startAt: '',
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
   });
+  const [lastGenerated, setLastGenerated] = useState('');
   
 
   const [brandSettings, setBrandSettings] = useState({
@@ -68,6 +71,8 @@ export default function NewsletterForm({ initialValues }: Props) {
       setFrequency(initialValues.frequency);
       setOutputFormat(initialValues.outputFormat);
       setCloudStorage(initialValues.cloudStorage);
+      setStatus(initialValues.status);
+      setLastGenerated(initialValues.lastGenerated ?? '');
 
       if (initialValues.brandSettings) {
         setBrandSettings({
@@ -121,7 +126,7 @@ export default function NewsletterForm({ initialValues }: Props) {
     setKeywordList(keywordList.filter((_, i) => i !== index));
   };
 
-  const handleDownloadExample = () => {
+  const handleDownloadGeneratedNewsletter = () => {
     console.log("Downloading example...")
   }
 
@@ -140,6 +145,8 @@ export default function NewsletterForm({ initialValues }: Props) {
       brandSettings,
       emailIntegration,
       schedule,
+      status,
+      lastGenerated
     };
   
     const isEditing = !!initialValues;
@@ -161,6 +168,10 @@ export default function NewsletterForm({ initialValues }: Props) {
       const text = await res.text();
       console.log("Non-JSON response:", text);
     }
+  };
+
+  const handleGenerateNewsletter = async () => {
+    console.log("Generate newsletter clicked!");
   };
 
   return (
@@ -373,68 +384,6 @@ export default function NewsletterForm({ initialValues }: Props) {
           </div>
         </div>
 
-
-
-          <div className="space-y-3">
-          <h2 className="text-left font-semibold text-lg text-gray-800 mb-2">
-            Email Integration (optional)
-          </h2>
-
-          <Select
-            value={emailIntegration.provider}
-            onValueChange={(value) =>
-              setEmailIntegration({ ...emailIntegration, provider: value as any })
-            }
-            disabled={!emailIntegration.sendOnGenerate}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Provider..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="None">None</SelectItem>
-              <SelectItem value="Mailchimp">Mailchimp</SelectItem>
-              <SelectItem value="Substack">Substack</SelectItem>
-              <SelectItem value="SMTP">SMTP</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Input
-            type="text"
-            placeholder="List ID"
-            value={emailIntegration.listId}
-            onChange={(e) =>
-              setEmailIntegration({ ...emailIntegration, listId: e.target.value })
-            }
-            disabled={!emailIntegration.sendOnGenerate}
-          />
-
-          <Input
-            type="email"
-            placeholder="From Email"
-            value={emailIntegration.fromEmail}
-            onChange={(e) =>
-              setEmailIntegration({
-                ...emailIntegration,
-                fromEmail: e.target.value,
-              })
-            }
-            disabled={!emailIntegration.sendOnGenerate}
-          />
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="send-on-generate"
-              checked={emailIntegration.sendOnGenerate}
-              onCheckedChange={(checked) =>
-                setEmailIntegration({
-                  ...emailIntegration,
-                  sendOnGenerate: Boolean(checked),
-                })
-              }
-            />
-            <Label htmlFor="send-on-generate">Send email on generate</Label>
-          </div>
-        </div>
           <hr />
           <h2 className="text-left font-semibold text-lg text-gray-800 mb-2">
             Scheduling and Workflow
@@ -470,15 +419,52 @@ export default function NewsletterForm({ initialValues }: Props) {
             </Select>
             <p className="text-xs text-gray-500 mt-1">From the schedule start time</p>
           </div>
-          <div className="col-span-full">
-            <Button onClick={handleDownloadExample} className="w-full bg-blue-500 text-white p-2 rounded-md ">
-                Download Example
+          <div className="col-span-full border border-gray-300 rounded-lg p-4 space-y-4">
+          {/* Status and Last Generated */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-sm font-medium text-gray-700">
+              Status: <span className="capitalize">{status}</span>
+            </span>
+            {lastGenerated && (
+              <span className="text-xs text-gray-500 mt-2 sm:mt-0">
+                Last generated: {new Date(lastGenerated).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+            <Button
+              onClick={handleGenerateNewsletter}
+              className="sm:w-1/3 w-full bg-green-500 text-white p-2 rounded-md"
+            >
+              Generate Newsletter
             </Button>
+
+            <Button
+              onClick={handleDownloadGeneratedNewsletter}
+              disabled={status !== 'ready'}
+              className="sm:flex-1 w-full bg-blue-500 text-white p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed mt-2 sm:mt-0"
+            >
+              Download Generated
+            </Button>
+          </div>
+
+          {status !== 'ready' && (
+            <div className="text-sm text-yellow-600 bg-yellow-100 border border-yellow-300 p-2 rounded-md">
+              You need to generate a newsletter first before downloading it.
             </div>
+          )}
+        </div>
           <Dialog>
           <DialogTrigger asChild>
             <Button className="w-full bg-green-500 text-white p-2 rounded-md">
-              Save Newsletter
+              Save Changes
             </Button>
           </DialogTrigger>
             <DialogContent>
@@ -491,7 +477,7 @@ export default function NewsletterForm({ initialValues }: Props) {
                     <p><span className="font-medium text-black">Frequency:</span> {frequency}</p>
                 </DialogDescription>
                 <Button onClick={handleFetchNews} className="w-full bg-green-500 text-white p-2 rounded-md">
-            Save Newsletter
+            Save Changes
           </Button>
               </DialogHeader>
             </DialogContent>
