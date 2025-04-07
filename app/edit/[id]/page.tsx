@@ -31,7 +31,7 @@ export default function EditNewsletterPage() {
   if (!initialData) return <p className="p-4 text-red-500">Newsletter not found.</p>;
 
   return (
-    <div className="min-h-screen  py-8 px-4">
+    <div className="flex-1  py-8 px-4">
       <div className="max-w-6xl mx-auto bg-white  p-6">
         <h1 className="text-2xl font-bold mb-6 text-center text-black">Edit Newsletter</h1>
         <NewsletterForm initialValues={initialData} />

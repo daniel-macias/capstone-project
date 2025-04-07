@@ -45,6 +45,7 @@ export default function NewsletterForm({ initialValues }: Props) {
   });
   const [lastGenerated, setLastGenerated] = useState('');
   const [docId, setDocId] = useState('');
+  const [tone, setTone] = useState('professional');
   
 
   const [brandSettings, setBrandSettings] = useState({
@@ -77,6 +78,7 @@ export default function NewsletterForm({ initialValues }: Props) {
       setStatus(initialValues.status);
       setLastGenerated(initialValues.lastGenerated ?? '');
       setDocId(initialValues.docId ?? '');
+      setTone(initialValues.tone);
 
       if (initialValues.brandSettings) {
         setBrandSettings({
@@ -171,7 +173,8 @@ export default function NewsletterForm({ initialValues }: Props) {
       schedule,
       status,
       lastGenerated,
-      docId
+      docId,
+      tone
     };
   
     const isEditing = !!initialValues;
@@ -236,9 +239,10 @@ export default function NewsletterForm({ initialValues }: Props) {
   };
 
   return (
-    <div className="flex justify-center min-h-screen bg-gray-100 p-4 text-black">
+    <div className="flex justify-center  bg-gray-100 p-4 text-black">
       <div className="w-full max-w-screen-xl bg-white shadow-lg rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-12">
         <div className="space-y-6">
+          <h2 className='font-semibold text-lg text-gray-800'>General Parameters</h2>
         <div>
   <Label htmlFor="name" className="mb-2 block">
     Newsletter Name
@@ -330,8 +334,8 @@ export default function NewsletterForm({ initialValues }: Props) {
             </div>
           </div>
 
-          {/* Category */}
-          <div>
+                           {/* Category */}
+                           <div>
             <Label htmlFor="category" className="mb-1 block">Category</Label>
             <Input
               id="category"
@@ -345,7 +349,32 @@ export default function NewsletterForm({ initialValues }: Props) {
           </div>
 
 
+        </div>
+
+        {/* Right Column for Optional Fields */}
+        <div className="space-y-6">
+
+        <h2 className='font-semibold text-lg text-gray-800 mb-6'>Generation Settings</h2>
+
+        <div>
+            <Label className="mb-2 block">Select Tone</Label>
+            <Select value={tone} onValueChange={setTone}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Tone..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="professional">Professional</SelectItem>
+                <SelectItem value="friendly">Friendly</SelectItem>
+                <SelectItem value="excited">Excited</SelectItem>
+                <SelectItem value="analytical">Analytical</SelectItem>
+                <SelectItem value="concise">Concise</SelectItem>
+                <SelectItem value="dramatic">Dramatic</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div>
+          
           <Label className="mb-2 block">Select Date Range</Label>
           <Select value={dateRange} onValueChange={setDateRange}>
             <SelectTrigger className="w-full">
@@ -386,100 +415,9 @@ export default function NewsletterForm({ initialValues }: Props) {
             </SelectContent>
           </Select>
         </div>
-        </div>
-
-        {/* Right Column for Optional Fields */}
-        <div className="space-y-6">
-        <div>
-          <h2 className="font-semibold text-lg text-gray-800 mb-2">Brand Settings (optional)</h2>
-
-          <Input
-            type="text"
-            placeholder="Logo URL"
-            value={brandSettings.logoUrl}
-            onChange={(e) =>
-              setBrandSettings({ ...brandSettings, logoUrl: e.target.value })
-            }
-          />
-
-          <Input
-            type="text"
-            placeholder="Accent Color"
-            value={brandSettings.accentColor}
-            onChange={(e) =>
-              setBrandSettings({ ...brandSettings, accentColor: e.target.value })
-            }
-            className="mt-2"
-          />
-
-          <Input
-            type="text"
-            placeholder="Font Family"
-            value={brandSettings.fontFamily}
-            onChange={(e) =>
-              setBrandSettings({ ...brandSettings, fontFamily: e.target.value })
-            }
-            className="mt-2"
-          />
-
-          <div className="flex items-center space-x-2 mt-3">
-            <Checkbox
-              id="include-header"
-              checked={brandSettings.includeHeader}
-              onCheckedChange={(checked) =>
-                setBrandSettings({ ...brandSettings, includeHeader: Boolean(checked) })
-              }
-            />
-            <Label htmlFor="include-header">Include Header</Label>
-          </div>
-
-          <div className="flex items-center space-x-2 mt-4">
-            <Checkbox
-              id="include-footer"
-              checked={brandSettings.includeFooter}
-              onCheckedChange={(checked) =>
-                setBrandSettings({ ...brandSettings, includeFooter: Boolean(checked) })
-              }
-            />
-            <Label htmlFor="include-footer">Include Footer</Label>
-          </div>
-        </div>
 
           <hr />
-          <h2 className="text-left font-semibold text-lg text-gray-800 mb-2">
-            Scheduling and Workflow
-          </h2>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="active"
-              checked={active}
-              onCheckedChange={(checked) => setActive(checked)}
-            />
-            <Label htmlFor="active">Active</Label>
-          </div>
-            <div>
-            <Label htmlFor="schedule-start">Schedule Start</Label>
-            <Input
-              id="schedule-start"
-              type="datetime-local"
-              value={schedule.startAt}
-              onChange={(e) => setSchedule({ ...schedule, startAt: e.target.value })}
-            />
-            </div>
-            <div>
-            <Label htmlFor="frequency">Frequency</Label>
-            <Select value={frequency} onValueChange={setFrequency}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Frequency..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Daily">Daily</SelectItem>
-              <SelectItem value="Weekly">Weekly</SelectItem>
-              <SelectItem value="Monthly">Monthly</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-gray-500 mt-1">From the schedule start time</p>
-          </div>
+          
           <div className="col-span-full border border-gray-300 rounded-lg p-4 space-y-4">
           {/* Status and Last Generated */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -538,8 +476,6 @@ export default function NewsletterForm({ initialValues }: Props) {
             </DialogContent>
           </Dialog>
         </div>
-
-        
       </div>
     </div>
   );

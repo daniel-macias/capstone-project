@@ -44,4 +44,5 @@ export type NewsletterConfig = {
     status: 'pending'|'generating'|'ready';
     lastGenerated: string;
     docId?: string;
+    tone: 'professional' | 'friendly' | 'excited' | 'analytical' | 'concise' | 'dramatic'
   };
