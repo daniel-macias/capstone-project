@@ -19,6 +19,9 @@ import {
 } from "@/components/ui/dialog"
 import { stat } from 'fs';
 import { useRouter } from 'next/navigation';
+import { Factory } from "lucide-react";
+import { Trash2 } from "lucide-react";
+
 
 type Props = {
   initialValues?: NewsletterConfig;
@@ -209,6 +212,34 @@ export default function NewsletterForm({ initialValues }: Props) {
       const text = await res.text();
       console.log("Non-JSON response:", text);
     }
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (!initialValues?.id) {
+        console.error('No ID to delete');
+        return;
+      }
+  
+      const res = await fetch('/api/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ _id: initialValues.id }),
+      });
+  
+      if (!res.ok) {
+        throw new Error('Failed to delete newsletter');
+      }
+  
+      console.log('Deleted successfully');
+    } catch (error) {
+      console.error('Error deleting newsletter:', error);
+    }
+  };
+
+  const handleClickDelete = async () => {
+    await handleDelete();
+    router.push('/');   
   };
 
   const handleGenarateClick = async () => {
@@ -460,9 +491,9 @@ export default function NewsletterForm({ initialValues }: Props) {
             <div className="w-full sm:w-1/3 flex">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="flex-1 h-full bg-green-500 text-white p-2 rounded-md">
-                    Generate Newsletter
-                  </Button>
+                <Button className="flex-1 h-full bg-green-500 text-white p-2 rounded-md flex flex-col items-center justify-center">
+                  <span className="text-base font-semibold">Generate Newsletter</span>
+                </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -508,21 +539,44 @@ export default function NewsletterForm({ initialValues }: Props) {
             </div>
           )}
         </div>
+        <div className="flex space-x-2 w-full">
+          {/* Save Changes Dialog */}
           <Dialog>
-          <DialogTrigger asChild>
-            <Button className="w-full bg-green-500 text-white p-2 rounded-md">
-              Save Changes
-            </Button>
-          </DialogTrigger>
+            <DialogTrigger asChild>
+              <Button className="flex-1 bg-green-500 text-white p-2 rounded-md">
+                Save Changes
+              </Button>
+            </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Are you sure you want to save your changes?</DialogTitle>
                 <Button onClick={handleSave} className="w-full bg-green-500 text-white p-2 rounded-md">
-            Save Changes
-          </Button>
+                  Save Changes
+                </Button>
               </DialogHeader>
             </DialogContent>
           </Dialog>
+
+          {/* Delete Dialog (only if editing) */}
+          {initialValues && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="w-10 h-10 p-0 bg-red-500 text-white rounded-md flex items-center justify-center">
+                  <Trash2 />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Are you sure you want to delete your newsletter?</DialogTitle>
+                  <Button onClick={handleClickDelete} className="w-full bg-red-500 text-white p-2 rounded-md">
+                    Delete
+                  </Button>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
+          
         </div>
       </div>
     </div>
