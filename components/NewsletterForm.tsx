@@ -78,7 +78,7 @@ export default function NewsletterForm({ initialValues }: Props) {
       setFrequency(initialValues.frequency);
       setOutputFormat(initialValues.outputFormat);
       setCloudStorage(initialValues.cloudStorage);
-      setStatus(initialValues.status);
+      setStatus(initialValues.status ?? 'pending');
       setLastGenerated(initialValues.lastGenerated ?? '');
       setDocId(initialValues.docId ?? '');
       setTone(initialValues.tone);
@@ -300,7 +300,7 @@ export default function NewsletterForm({ initialValues }: Props) {
     id="name"
     value={name}
     onChange={(e) => setName(e.target.value)}
-    placeholder="Cybersecurity Weekly"
+    placeholder="e.g. Cybersecurity Weekly"
   />
 </div>
 
@@ -326,7 +326,7 @@ export default function NewsletterForm({ initialValues }: Props) {
                 className="flex-1"
                 value={rssFeed}
                 onChange={(e) => setRssFeed(e.target.value)}
-                placeholder="https://example.com/feed"
+                placeholder="e.g. https://example.com/feed"
               />
               <Button type="button" onClick={handleAddRss}>
                 +
@@ -359,7 +359,7 @@ export default function NewsletterForm({ initialValues }: Props) {
                 className="flex-1"
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
-                placeholder="malware, ransomware..."
+                placeholder="e.g. malware, ransomware..."
               />
               <Button type="button" onClick={handleAddKeyword}>
                 +
@@ -385,7 +385,7 @@ export default function NewsletterForm({ initialValues }: Props) {
 
                            {/* Category */}
                            <div>
-            <Label htmlFor="category" className="mb-1 block">Category</Label>
+            <Label htmlFor="category" className="mb-1 block">Topic</Label>
             <Input
               id="category"
               value={category}
@@ -491,7 +491,7 @@ export default function NewsletterForm({ initialValues }: Props) {
             <div className="w-full sm:w-1/3 flex">
               <Dialog>
                 <DialogTrigger asChild>
-                <Button className="flex-1 h-full bg-green-500 text-white p-2 rounded-md flex flex-col items-center justify-center">
+                <Button disabled={initialValues? false : true} className="flex-1 h-full bg-green-500 text-white p-2 rounded-md flex flex-col items-center justify-center">
                   <span className="text-base font-semibold">Generate Newsletter</span>
                 </Button>
                 </DialogTrigger>

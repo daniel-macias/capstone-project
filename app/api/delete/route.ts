@@ -11,11 +11,11 @@ export async function DELETE(req: NextRequest) {
     }
 
     const response = await fetch(WEBHOOK_DELETE, {
-      method: 'POST', // n8n Webhooks usually expect POST even if logically it's a delete
+      method: 'POST', 
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query: { id: body._id } }), 
+      body: JSON.stringify({ query: { id: body._id } }),
     });
 
     if (!response.ok) {
@@ -24,8 +24,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ message: 'Webhook error', error: errorText }, { status: 500 });
     }
 
-    const webhookData = await response.json();
-    return NextResponse.json({ message: 'Deleted successfully via webhook.', data: webhookData });
+    return NextResponse.json({ message: 'Deleted successfully via webhook.' });
 
   } catch (error) {
     console.error('Error deleting newsletter:', error);
