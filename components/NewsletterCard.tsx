@@ -1,11 +1,26 @@
+'use client';
+
 import { NewsletterConfig } from '@/lib/types';
 import Link from 'next/link';
+import { BounceLoader } from 'react-spinners';
+import { useEffect, useState } from 'react';
 
 type Props = {
 	newsletter: NewsletterConfig;
 };
 
 export default function NewsletterCard({ newsletter }: Props) {
+	const [dots, setDots] = useState('');
+
+	useEffect(() => {
+		if (newsletter.status === 'generating') {
+			const interval = setInterval(() => {
+				setDots((prev) => (prev.length >= 3 ? '' : prev + '.'));
+			}, 500);
+			return () => clearInterval(interval);
+		}
+	}, [newsletter.status]);
+
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case 'pending':
@@ -15,7 +30,7 @@ export default function NewsletterCard({ newsletter }: Props) {
 			case 'ready':
 				return 'bg-green-500';
 			default:
-				return 'bg-gray-300'; 
+				return 'bg-gray-300';
 		}
 	};
 
@@ -34,11 +49,16 @@ export default function NewsletterCard({ newsletter }: Props) {
 				</div>
 			</div>
 
-			{/* Status in its own line */}
 			{newsletter.status && (
 				<div className="text-xs text-gray-500 mt-4 flex items-center gap-2">
-					<span className={`w-2 h-2 rounded-full ${getStatusColor(newsletter.status)}`} />
-					<span>{newsletter.status}</span>
+					{newsletter.status === 'generating' ? (
+						<BounceLoader color="#3b82f6" size={12} />
+					) : (
+						<span className={`w-2 h-2 rounded-full ${getStatusColor(newsletter.status)}`} />
+					)}
+					<span>
+						{newsletter.status === 'generating' ? `generating${dots}` : newsletter.status}
+					</span>
 				</div>
 			)}
 		</Link>

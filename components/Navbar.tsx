@@ -6,7 +6,7 @@ export default function Navbar() {
   return (
     <nav className="bg-white shadow-sm">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/" className="text-xl font-bold text-blue-600">
+        <Link href="/" className="text-xl font-light text-blue-600">
           Newsletter Generator
         </Link>
         <div className="space-x-6 text-sm text-gray-800">
