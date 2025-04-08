@@ -151,6 +151,19 @@ export default function NewsletterForm({ initialValues }: Props) {
 
   }
 
+  const handleDriveGeneratedNewsletter = () => {
+    if (!docId) return;
+    const downloadUrl = `https://drive.google.com/uc?export=download&id=${docId}`;
+    window.open(downloadUrl, "_blank");
+  };
+  
+  const handleGoogleDocsGeneratedNewsletter = () => {
+    if (!docId) return;
+    const docUrl = `https://docs.google.com/document/d/${docId}/edit`;
+    window.open(docUrl, "_blank");
+  };
+  
+
   const handleSave = async () => {
     await handleFetchNews();  
     router.push('/');      
@@ -196,6 +209,11 @@ export default function NewsletterForm({ initialValues }: Props) {
       const text = await res.text();
       console.log("Non-JSON response:", text);
     }
+  };
+
+  const handleGenarateClick = async () => {
+    await handleGenerateNewsletter();  
+    router.push('/');   
   };
 
   const handleGenerateNewsletter = async () => {
@@ -437,22 +455,52 @@ export default function NewsletterForm({ initialValues }: Props) {
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-            <Button
-              onClick={handleGenerateNewsletter}
-              className="sm:w-1/3 w-full bg-green-500 text-white p-2 rounded-md"
-            >
-              Generate Newsletter
-            </Button>
+          <div className="flex flex-col sm:flex-row sm:items-stretch sm:space-x-4 w-full">
+            {/* Botón Verde - Generate Newsletter */}
+            <div className="w-full sm:w-1/3 flex">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="flex-1 h-full bg-green-500 text-white p-2 rounded-md">
+                    Generate Newsletter
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Generate</DialogTitle>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Generating will create a new file on your drive. Are you sure?
+                    </p>
+                    <Button
+                      onClick={handleGenarateClick}
+                      className="w-full bg-green-500 text-white p-2 rounded-md"
+                    >
+                      Confirm Generate
+                    </Button>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </div>
 
-            <Button
-              onClick={handleDownloadGeneratedNewsletter}
-              disabled={status !== 'ready'}
-              className="sm:flex-1 w-full bg-blue-500 text-white p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed mt-2 sm:mt-0"
-            >
-              Download Generated
-            </Button>
+            {/* Botones Azules */}
+            <div className="flex-1 flex flex-col justify-between space-y-2 mt-4 sm:mt-0">
+              <Button
+                onClick={handleDriveGeneratedNewsletter}
+                disabled={status !== 'ready'}
+                className="w-full bg-blue-500 text-white p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Download Generated
+              </Button>
+              <Button
+                onClick={handleGoogleDocsGeneratedNewsletter}
+                disabled={status !== 'ready'}
+                className="w-full bg-blue-500 text-white p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                View in Google Docs
+              </Button>
+            </div>
           </div>
+
+
 
           {status !== 'ready' && (
             <div className="text-sm text-yellow-600 bg-yellow-100 border border-yellow-300 p-2 rounded-md">
