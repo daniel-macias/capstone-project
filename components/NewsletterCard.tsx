@@ -37,20 +37,20 @@ export default function NewsletterCard({ newsletter }: Props) {
 	return (
 		<Link
 			href={`/edit/${newsletter.id}`}
-			className="bg-white shadow rounded-lg p-4 border border-gray-300 hover:shadow-lg transition flex flex-col justify-between"
+			className="bg-white dark:bg-card shadow rounded-lg p-4 border border-gray-300 dark:border-border hover:shadow-lg transition flex flex-col justify-between"
 		>
 			<div>
-				<h2 className="text-lg font-semibold mb-1 text-black">{newsletter.name}</h2>
-				<p className="text-sm text-gray-600 mb-2 truncate">
+				<h2 className="text-lg font-semibold mb-1 text-black dark:text-foreground">{newsletter.name}</h2>
+				<p className="text-sm text-gray-600 dark:text-muted-foreground mb-2 truncate">
 					{newsletter.description || 'No description provided'}
 				</p>
-				<div className="text-xs text-gray-500 flex items-center gap-2">
+				<div className="text-xs text-gray-500 dark:text-muted-foreground flex items-center gap-2">
 					<span>{newsletter.category} • {newsletter.frequency}</span>
 				</div>
 			</div>
 
 			{newsletter.status && (
-				<div className="text-xs text-gray-500 mt-4 flex items-center gap-2">
+				<div className="text-xs text-gray-500 dark:text-muted-foreground mt-4 flex items-center gap-2">
 					{newsletter.status === 'generating' ? (
 						<BounceLoader color="#3b82f6" size={12} />
 					) : (

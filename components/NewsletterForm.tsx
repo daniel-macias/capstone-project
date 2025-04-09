@@ -21,6 +21,7 @@ import { stat } from 'fs';
 import { useRouter } from 'next/navigation';
 import { Factory } from "lucide-react";
 import { Trash2 } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 
 type Props = {
@@ -288,16 +289,17 @@ export default function NewsletterForm({ initialValues }: Props) {
   };
 
   return (
-    <div className="flex justify-center  bg-gray-100 p-4 text-black">
-      <div className="w-full max-w-screen-xl bg-white shadow-lg rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div className="flex justify-center p-4 text-black">
+      <div className="w-full max-w-screen-xl bg-background dark:bg-zinc-800 shadow-lg rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-12">
         <div className="space-y-6">
-          <h2 className='font-semibold text-lg text-gray-800'>General Parameters</h2>
+        <h2 className='font-semibold text-lg text-foreground'>General Parameters</h2>
         <div>
-  <Label htmlFor="name" className="mb-2 block">
+  <Label htmlFor="name" className="mb-2 block text-foreground">
     Newsletter Name
   </Label>
   <Input
     id="name"
+    className='text-foreground'
     value={name}
     onChange={(e) => setName(e.target.value)}
     placeholder="e.g. Cybersecurity Weekly"
@@ -305,11 +307,12 @@ export default function NewsletterForm({ initialValues }: Props) {
 </div>
 
 <div>
-  <Label htmlFor="description" className="mb-2 block">
+  <Label htmlFor="description" className="mb-2 block text-foreground">
     Description
   </Label>
   <Textarea
     id="description"
+    className='text-foreground'
     value={description}
     onChange={(e) => setDescription(e.target.value)}
     placeholder="A short description of your newsletter..."
@@ -319,31 +322,37 @@ export default function NewsletterForm({ initialValues }: Props) {
 
           {/* RSS Feeds */}
           <div>
-            <Label className="mb-2 block">Enter RSS Feeds & Websites</Label>
+            <Label className="mb-2 block text-foreground">Enter RSS Feeds & Websites</Label>
             <div className="flex gap-2">
               <Input
                 type="text"
-                className="flex-1"
+                className="flex-1 text-foreground"
                 value={rssFeed}
                 onChange={(e) => setRssFeed(e.target.value)}
                 placeholder="e.g. https://example.com/feed"
               />
-              <Button type="button" onClick={handleAddRss}>
-                +
+              <Button
+                type="button"
+                onClick={handleAddRss}
+                className="p-2 bg-green-700 hover:bg-green-800 text-white rounded-md"
+                size="icon"
+              >
+                <Plus className="w-5 h-5" />
               </Button>
             </div>
+
             <div className="mt-2 flex flex-wrap gap-2">
               {rssList.map((feed, index) => (
                 <span
                   key={index}
-                  className="bg-gray-200 px-3 py-1 rounded-full flex items-center"
+                  className="bg-zinc-700 px-3 py-1 rounded-full flex items-center text-foreground"
                 >
                   {feed}
                   <button
                     onClick={() => handleRemoveRss(index)}
-                    className="ml-2 text-red-500"
+                    className="ml-2 text-red-400 hover:text-red-300 transition-colors"
                   >
-                    ×
+                    <X className="w-4 h-4" />
                   </button>
                 </span>
               ))}
@@ -352,31 +361,37 @@ export default function NewsletterForm({ initialValues }: Props) {
 
           {/* Keywords */}
           <div>
-            <Label className="mb-2 block">Enter Keywords</Label>
+            <Label className="mb-2 block text-foreground">Enter Keywords</Label>
             <div className="flex gap-2">
               <Input
                 type="text"
-                className="flex-1"
+                className="flex-1 text-foreground"
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
                 placeholder="e.g. malware, ransomware..."
               />
-              <Button type="button" onClick={handleAddKeyword}>
-                +
+              <Button
+                type="button"
+                onClick={handleAddKeyword}
+                className="p-2 bg-green-700 hover:bg-green-800 text-white rounded-md"
+                size="icon"
+              >
+                <Plus className="w-5 h-5" />
               </Button>
             </div>
+
             <div className="mt-2 flex flex-wrap gap-2">
               {keywordList.map((word, index) => (
                 <span
                   key={index}
-                  className="bg-gray-200 px-3 py-1 rounded-full flex items-center"
+                  className="bg-zinc-700 px-3 py-1 rounded-full flex items-center text-foreground"
                 >
                   {word}
                   <button
                     onClick={() => handleRemoveKeyword(index)}
-                    className="ml-2 text-red-500"
+                    className="ml-2 text-red-400 hover:text-red-300 transition-colors"
                   >
-                    ×
+                    <X className="w-4 h-4" />
                   </button>
                 </span>
               ))}
@@ -385,14 +400,15 @@ export default function NewsletterForm({ initialValues }: Props) {
 
                            {/* Category */}
                            <div>
-            <Label htmlFor="category" className="mb-1 block">Topic</Label>
+            <Label htmlFor="category" className="mb-1 block text-foreground">Topic</Label>
             <Input
               id="category"
+              className='text-foreground'
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g., Cybersecurity"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Keep it short and descriptive
             </p>
           </div>
@@ -403,56 +419,57 @@ export default function NewsletterForm({ initialValues }: Props) {
         {/* Right Column for Optional Fields */}
         <div className="space-y-6">
 
-        <h2 className='font-semibold text-lg text-gray-800 mb-6'>Generation Settings</h2>
+        <h2 className='font-semibold text-lg text-foreground mb-6'>Generation Settings</h2>
 
         <div>
-            <Label className="mb-2 block">Select Tone</Label>
+            <Label className="mb-2 block text-foreground">Select Tone</Label>
             <Select value={tone} onValueChange={setTone}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Tone..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="professional">Professional</SelectItem>
-                <SelectItem value="friendly">Friendly</SelectItem>
-                <SelectItem value="excited">Excited</SelectItem>
-                <SelectItem value="analytical">Analytical</SelectItem>
-                <SelectItem value="concise">Concise</SelectItem>
-                <SelectItem value="dramatic">Dramatic</SelectItem>
-              </SelectContent>
-            </Select>
+            <SelectTrigger className="w-full bg-background text-foreground border-border">
+              <SelectValue placeholder="Select Tone..." />
+            </SelectTrigger>
+            <SelectContent className="bg-background text-foreground border-border">
+              <SelectItem value="professional">Professional</SelectItem>
+              <SelectItem value="friendly">Friendly</SelectItem>
+              <SelectItem value="excited">Excited</SelectItem>
+              <SelectItem value="analytical">Analytical</SelectItem>
+              <SelectItem value="concise">Concise</SelectItem>
+              <SelectItem value="dramatic">Dramatic</SelectItem>
+            </SelectContent>
+          </Select>
           </div>
 
           <div>
           
-          <Label className="mb-2 block">Select Date Range</Label>
+          <Label className="mb-2 block text-foreground">Select Date Range</Label>
           <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Date Range..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Past 24h">Past 24h</SelectItem>
-              <SelectItem value="Past Week">Past Week</SelectItem>
-              <SelectItem value="Past Month">Past Month</SelectItem>
-            </SelectContent>
-          </Select>
+          <SelectTrigger className="w-full bg-background text-foreground border-border">
+            <SelectValue placeholder="Select Date Range..." />
+          </SelectTrigger>
+          <SelectContent className="bg-background text-foreground border-border">
+            <SelectItem value="Past 24h">Past 24h</SelectItem>
+            <SelectItem value="Past Week">Past Week</SelectItem>
+            <SelectItem value="Past Month">Past Month</SelectItem>
+          </SelectContent>
+        </Select>
+
         </div>
 
         <div>
-          <Label className="mb-2 block">Output Format</Label>
+          <Label className="mb-2 block text-foreground">Output Format</Label>
           <Select value={outputFormat} onValueChange={setOutputFormat}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Format..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="docx">docx</SelectItem>
-              <SelectItem value="markdown">markdown</SelectItem>
-              <SelectItem value="google-doc">google-doc</SelectItem>
-            </SelectContent>
-          </Select>
+          <SelectTrigger className="w-full bg-background text-foreground border-border">
+            <SelectValue placeholder="Select Format..." />
+          </SelectTrigger>
+          <SelectContent className="bg-background text-foreground border-border">
+            <SelectItem value="docx">docx</SelectItem>
+            <SelectItem value="markdown">markdown</SelectItem>
+            <SelectItem value="google-doc">google-doc</SelectItem>
+          </SelectContent>
+        </Select>
         </div>
 
         <div>
-          <Label className="mb-2 block">Cloud Storage</Label>
+          <Label className="mb-2 block text-foreground">Cloud Storage</Label>
           <Select value={cloudStorage} onValueChange={setCloudStorage}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Cloud Storage..." />
@@ -467,14 +484,14 @@ export default function NewsletterForm({ initialValues }: Props) {
 
           <hr />
           
-          <div className="col-span-full border border-gray-300 rounded-lg p-4 space-y-4">
+          <div className="col-span-full border border-border rounded-lg p-4 space-y-4">
           {/* Status and Last Generated */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-foreground">
               Status: <span className="capitalize">{status}</span>
             </span>
             {lastGenerated && (
-              <span className="text-xs text-gray-500 mt-2 sm:mt-0">
+              <span className="text-xs text-muted-foreground mt-2 sm:mt-0">
                 Last generated: {new Date(lastGenerated).toLocaleString('en-US', {
                   year: 'numeric',
                   month: 'short',
@@ -491,14 +508,14 @@ export default function NewsletterForm({ initialValues }: Props) {
             <div className="w-full sm:w-1/3 flex">
               <Dialog>
                 <DialogTrigger asChild>
-                <Button disabled={initialValues? false : true} className="flex-1 h-full bg-green-500 text-white p-2 rounded-md flex flex-col items-center justify-center">
+                <Button disabled={initialValues? false : true} className="flex-1 h-full bg-green-700 hover:bg-green-800 text-white p-2 rounded-md flex flex-col items-center justify-center">
                   <span className="text-base font-semibold">Generate Newsletter</span>
                 </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Generate</DialogTitle>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-muted-foreground mb-4">
                       Generating will create a new file on your drive. Are you sure?
                     </p>
                     <Button
@@ -517,14 +534,14 @@ export default function NewsletterForm({ initialValues }: Props) {
               <Button
                 onClick={handleDriveGeneratedNewsletter}
                 disabled={status !== 'ready'}
-                className="w-full bg-blue-500 text-white p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-cyan-800 hover:bg-cyan-900 text-white p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Download Generated
               </Button>
               <Button
                 onClick={handleGoogleDocsGeneratedNewsletter}
                 disabled={status !== 'ready'}
-                className="w-full bg-blue-500 text-white p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-cyan-800 hover:bg-cyan-900 text-white p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 View in Google Docs
               </Button>
@@ -534,7 +551,7 @@ export default function NewsletterForm({ initialValues }: Props) {
 
 
           {status !== 'ready' && (
-            <div className="text-sm text-yellow-600 bg-yellow-100 border border-yellow-300 p-2 rounded-md">
+            <div className="text-sm text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 p-2 rounded-md">
               You need to generate a newsletter first before downloading it.
             </div>
           )}
@@ -543,7 +560,7 @@ export default function NewsletterForm({ initialValues }: Props) {
           {/* Save Changes Dialog */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="flex-1 bg-green-500 text-white p-2 rounded-md">
+              <Button className="flex-1 bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
                 Save Changes
               </Button>
             </DialogTrigger>
@@ -561,7 +578,7 @@ export default function NewsletterForm({ initialValues }: Props) {
           {initialValues && (
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="w-10 h-10 p-0 bg-red-500 text-white rounded-md flex items-center justify-center">
+                <Button className="w-10 h-10 p-0 bg-red-700 hover:bg-red-800 text-white rounded-md flex items-center justify-center">
                   <Trash2 />
                 </Button>
               </DialogTrigger>

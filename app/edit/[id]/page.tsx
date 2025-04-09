@@ -30,20 +30,26 @@ export default function EditNewsletterPage() {
 
 	if (loading) {
 		return (
-			<div className="flex justify-center items-center min-h-screen">
+			<div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-background">
 				<ClipLoader size={50} color="#3b82f6" />
 			</div>
 		);
 	}
 
 	if (!initialData) {
-		return <p className="p-4 text-red-500">Newsletter not found.</p>;
+		return (
+			<p className="p-4 text-red-500 dark:text-red-400">
+				Newsletter not found.
+			</p>
+		);
 	}
 
 	return (
-		<div className="flex-1 py-8 px-4">
-			<div className="">
-				<h1 className="text-2xl font-light mb-6 text-center text-black">Edit Newsletter</h1>
+		<div className="flex-1 py-8 px-4 bg-gray-100 dark:bg-background">
+			<div>
+				<h1 className="text-2xl font-light mb-6 text-center text-black dark:text-foreground">
+					Edit Newsletter
+				</h1>
 				<NewsletterForm initialValues={initialData} />
 			</div>
 		</div>

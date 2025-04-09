@@ -50,24 +50,23 @@ export default function HomePage() {
 	}, []);
 
 	return (
-		<div className="min-h-screen bg-gray-100 py-8 px-4">
+		<div className="min-h-screen bg-gray-100 dark:bg-background py-8 px-4">
 			{loading ? (
 				<div className="flex justify-center items-center h-[70vh]">
-					<ClipLoader color="#3b82f6" size={60} /> {/* Azul bonito y tamaño grande */}
+					<ClipLoader color="#3b82f6" size={60} />
 				</div>
 			) : (
 				<div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 					{/* Create Card */}
-          <Link
-            href="/create"
-            className="group bg-white shadow-md rounded-lg p-6 flex flex-col items-center justify-center text-center border border-dashed border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition relative overflow-hidden"
-          >
-            <Plus className="text-blue-600 w-10 h-10 transition-transform group-hover:-translate-y-2" />
-            <span className="absolute opacity-0 group-hover:opacity-100 group-hover:translate-y-6 transition-all text-xl font-light text-blue-600 mt-2">
-              Create Newsletter
-            </span>
-          </Link>
-
+					<Link
+						href="/create"
+						className="group bg-white dark:bg-card shadow-md rounded-lg p-6 flex flex-col items-center justify-center text-center border border-dashed border-gray-300 dark:border-border hover:border-blue-500 dark:hover:border-primary hover:bg-blue-50 dark:hover:bg-muted transition relative overflow-hidden"
+					>
+						<Plus className="text-blue-600 dark:text-blue-100 w-10 h-10 transition-transform group-hover:-translate-y-2" />
+						<span className="absolute opacity-0 group-hover:opacity-100 group-hover:translate-y-6 transition-all text-xl font-light text-blue-600 dark:text-blue-100 mt-2">
+							Create Newsletter
+						</span>
+					</Link>
 
 					{/* Existing Newsletters */}
 					{newsletters.map((nl) => (
