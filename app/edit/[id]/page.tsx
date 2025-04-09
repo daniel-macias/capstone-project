@@ -42,7 +42,7 @@ export default function EditNewsletterPage() {
 
 	return (
 		<div className="flex-1 py-8 px-4">
-			<div className="max-w-6xl mx-auto bg-white p-6">
+			<div className="">
 				<h1 className="text-2xl font-light mb-6 text-center text-black">Edit Newsletter</h1>
 				<NewsletterForm initialValues={initialData} />
 			</div>
